@@ -18,4 +18,8 @@
     <string name="first">First name</string>
     <string name="last">Last name</string>
     <string name="des">Description</string>
+    <string name="showContacts">Show Contacts</string>
+    <string name="createContact">Create contact</string>
+    <string name="noContact">No contacts found</string>
+    <string name="searchContacts">Search contacts</string>
 </resources>

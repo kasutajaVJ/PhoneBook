@@ -48,7 +48,7 @@ public class SearchActivity extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         People persons = new People(db, fname, lname, addr, title);
         if (persons.getPeople().size() == 0) {
-            Toast.makeText(this, "No contacts found", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.noContact, Toast.LENGTH_LONG).show();
             db.close();
         }
         else if (persons.getPeople().size() == 1) {

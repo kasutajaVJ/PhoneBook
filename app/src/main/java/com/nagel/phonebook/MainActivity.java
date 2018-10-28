@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        menu.add(Menu.NONE, MENU_SHOW, Menu.NONE, "Show Contacts");
-        menu.add(Menu.NONE, MENU_CREATE, Menu.NONE, "Create contact");
+        menu.add(Menu.NONE, MENU_SHOW, Menu.NONE, R.string.showContacts);
+        menu.add(Menu.NONE, MENU_CREATE, Menu.NONE, R.string.createContact);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     private void showPeople(Zipcode zipcode) {
         people = new People(db, zipcode);
         if (people.getPeople().size() == 0){
-            Toast.makeText(this, "No contacts found", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.noContact, Toast.LENGTH_LONG).show();
         }
         else if (people.getPeople().size() == 1){
             Intent intent = new Intent(this, PersonActivity.class);
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, "Search contacts");
+        menu.add(Menu.NONE, MENU_SEARCH, Menu.NONE, R.string.searchContacts);
         return super.onCreateOptionsMenu(menu);
     }
 
