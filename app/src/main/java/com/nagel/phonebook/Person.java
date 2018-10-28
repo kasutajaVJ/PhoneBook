@@ -8,7 +8,7 @@ public class Person implements Serializable {
 
     private int id;
     private String firstname, lastname, address, phone, mail, date, title, description;
-    private  Zipcode zipcode;
+    private Zipcode zipcode;
 
     public Person(){}
 

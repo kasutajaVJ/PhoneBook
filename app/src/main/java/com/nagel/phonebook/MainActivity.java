@@ -38,9 +38,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new DbHelper(this);
-        db = dbHelper.getReadableDatabase();
-        zipcodes = new Zipcodes(db);
         lstCodes = findViewById(R.id.lstCodes);
         txtCode = findViewById(R.id.etCode);
         txtCity = findViewById(R.id.etCity);
@@ -55,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private List<Zipcode> getCodes(String code, String city) {
+        dbHelper = new DbHelper(this);
+        db = dbHelper.getReadableDatabase();
+        zipcodes = new Zipcodes(db);
         List<Zipcode> list = new ArrayList<>();
         for (Zipcode zipcode : zipcodes.getZipcodes())
             if (zipcode.getCode().startsWith(code) && zipcode.getCity().contains(city)) list.add(zipcode);

@@ -52,10 +52,8 @@ public class PersonActivity extends AppCompatActivity {
             zipcode = (Zipcode) obj;
             Calendar cal = Calendar.getInstance();
             txtDate.setText(String.format("%02d-%02d-%d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR)));
-        }
-        else
-        {
-            person = (Person)intent.getSerializableExtra("person");
+        } else {
+            person = (Person) intent.getSerializableExtra("person");
             txtFirstName.setText(person.getFirstname());
             txtLastName.setText(person.getLastname());
             txtAddress.setText(person.getAddress());
@@ -69,18 +67,18 @@ public class PersonActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         txtZip.setText(zipcode.toString());
         disable(txtDate);
-        disable(txtZip);
+//        disable(txtZip);
     }
 
     /* disables edittext fields*/
-    private void disable(EditText view)
-    {
+    private void disable(EditText view) {
         view.setKeyListener(null);
         view.setEnabled(false);
     }
+
     /* adds a back button to the ACTIONBAR*/
     @Override
-    public boolean onSupportNavigateUp(){
+    public boolean onSupportNavigateUp() {
         finish();
         return true;
     }
@@ -97,11 +95,30 @@ public class PersonActivity extends AppCompatActivity {
     Basically, it happens the same way, in the one case, you use the method insert() method,
     while in the second case, you use the method update(), except that in the latter case you
     should specify a WHERE part. */
-    public void onOkay(View view)
-    {
+    public void onOkay(View view) {
         String fname = txtFirstName.getText().toString().trim();
-        if (fname.length() > 0)
-        {
+        String zip = txtZip.getText().toString().trim();
+        String code = zip.split(" ", 2)[0];
+
+        DbHelper dbHelper = new DbHelper(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        if (fname.length() > 0 && zip.length() > 0) {
+            if (!zip.equals(zipcode.toString())) {
+                String[] zipAndCode = zip.split(" ", 2);
+                String cityName = "";
+
+                if (zipAndCode.length > 1) {
+                    cityName = zipAndCode[1];
+                }
+
+                ContentValues values = new ContentValues(2);
+                values.put(DbHelper.ZTABLE_COLUMNS[DbHelper.ZCOLUMN_CODE], zipAndCode[0]);
+                values.put(DbHelper.ZTABLE_COLUMNS[DbHelper.ZCOLUMN_CITY], cityName);
+
+                db.insert(DbHelper.ZTABLE_NAME, null, values);
+            }
+
             String lname = txtLastName.getText().toString().trim();
             String addr = txtAddress.getText().toString().trim();
             String phone = txtPhone.getText().toString().trim();
@@ -110,30 +127,24 @@ public class PersonActivity extends AppCompatActivity {
             String title = txtTitle.getText().toString().trim();
             String text = txtText.getText().toString().trim();
 
-            DbHelper dbHelper = new DbHelper(this);
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-
             ContentValues values = new ContentValues(8);
             values.put(DbHelper.ATABLE_COLUMNS[DbHelper.ACOLUMN_FIRSTNAME], fname);
             values.put(DbHelper.ATABLE_COLUMNS[DbHelper.ACOLUMN_LASTNAME], lname);
             values.put(DbHelper.ATABLE_COLUMNS[DbHelper.ACOLUMN_ADDRESS], addr);
-            values.put(DbHelper.ATABLE_COLUMNS[DbHelper.ACOLUMN_CODE], zipcode.getCode());
+            values.put(DbHelper.ATABLE_COLUMNS[DbHelper.ACOLUMN_CODE], code);
             values.put(DbHelper.ATABLE_COLUMNS[DbHelper.ACOLUMN_PHONE], phone);
             values.put(DbHelper.ATABLE_COLUMNS[DbHelper.ACOLUMN_MAIL], mail);
             values.put(DbHelper.ATABLE_COLUMNS[DbHelper.ACOLUMN_TITLE], title);
             values.put(DbHelper.ATABLE_COLUMNS[DbHelper.ACOLUMN_TEXT], text);
 
-            if (person == null)
-            {
+            if (person == null) {
                 values.put(DbHelper.ATABLE_COLUMNS[DbHelper.ACOLUMN_DATE], date);
                 db.insert(DbHelper.ATABLE_NAME, null, values);
-            }
-            else
-            {
+            } else {
                 Calendar cal = Calendar.getInstance();
                 values.put(DbHelper.ATABLE_COLUMNS[DbHelper.ACOLUMN_DATE], String.format("%02d-%02d-%d", cal.get(Calendar.DAY_OF_MONTH),
                         cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR)));
-                String[] args = { "" + person.getId() };
+                String[] args = {"" + person.getId()};
                 db.update(DbHelper.ATABLE_NAME, values, "id = ?", args);
             }
             db.close();
@@ -144,13 +155,11 @@ public class PersonActivity extends AppCompatActivity {
     /* Finally, there is the last event handler used to delete a contact and thus perform a SQL
     DELETE. It’s basically done just in the same way as above, but where you must use the
     method delete(). */
-    public void onRemove(View view)
-    {
-        if (person != null)
-        {
+    public void onRemove(View view) {
+        if (person != null) {
             DbHelper dbHelper = new DbHelper(this);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            String[] args = { "" + person.getId() };
+            String[] args = {"" + person.getId()};
             db.delete(DbHelper.ATABLE_NAME, "id = ?", args);
             db.close();
             onSupportNavigateUp();
